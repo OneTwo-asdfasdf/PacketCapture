@@ -8,14 +8,20 @@
 #include <stdlib.h>
 #include <netinet/ip.h>
 #include <netinet/tcp.h>
+//include!!
+
 
 #define PROMISCUOUS 1
+
+//PROMISCUOUS for pcap_open_live()
 
 struct ip *iph;
 struct tcphdr *tcph;
 struct ethernet *ethnet;
+//struct for ip, tcp, ethernet packet check
 
 void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *packet){
+    //callback - packet check
     //packet processing
     static int count = 1;
     struct ether_header *ep;
@@ -24,12 +30,15 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     int length=pkthdr->len;
 
     ep=(struct ether_header * )packet;
+    //ethernet packet
+
     //ethernet header
     packet += sizeof(struct ether_header);
     ether_type = ntohs(ep->ether_type);
 
     if(ether_type == ETHERTYPE_IP){
         iph = (struct ip *)packet;
+        //ip packet check
         printf("IP Packet\n");
         printf("Version         : %d\n", iph->ip_v);
         printf("Header Len      : %d\n", iph->ip_hl);
@@ -42,6 +51,7 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
 
         if(iph->ip_p == IPPROTO_TCP){
             tcph = (struct tcphdr *)(packet + iph->ip_hl * 4);
+            //tcp packet check
             printf("Source Port      : %d\n", ntohs(tcph->th_sport));
             printf("Destination Port : %d\n", ntohs(tcph->th_dport));
         }
@@ -51,7 +61,8 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
                 printf("\n");
         }
     }else {
-        printf("NON PACKET\n");
+        //execption for no ip type
+        printf("NON IP PACKET\n");
     }
     printf("\n\n");
 }
@@ -78,11 +89,14 @@ int main(int argc, char *argv[])
     struct ether_header *eptr;
 
     dev=pcap_lookupdev(errbuf);
+    //device name check
     if(dev ==NULL){
         printf("%s\n",errbuf);
         exit(1);
     }
+    //execption for no device name
     ret = pcap_lookupnet(dev, &netp, &maskp, errbuf);
+    //net ,mask check
     if(ret == -1){
         printf("%s\n", errbuf);
         exit(1);
@@ -100,6 +114,8 @@ int main(int argc, char *argv[])
         exit(1);
     }
 
+    //execption for no net, no mask
+
     printf("DEV : %s\n", dev);
     printf("NET : %s\n",net);
     printf("MASK : %s\n", mask);
@@ -110,15 +126,19 @@ int main(int argc, char *argv[])
         printf("%s\n", errbuf);
         exit(1);
     }
+    //packet capture descripter for network device
     if (pcap_compile(pcd, &fp, NULL, 0, netp) == -1){
         printf("compile error\n");
         exit(1);
     }
+    //compile
     if (pcap_setfilter(pcd, &fp) == -1){
         printf("setfilter error\n");
         exit(0);
     }
+    //setfilter
     pcap_loop(pcd, 0, callback, NULL);
+    //packet capture without interruption and action callback
 
     return 0;
 }
