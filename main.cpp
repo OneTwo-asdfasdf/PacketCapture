@@ -1,3 +1,14 @@
+//platform : Mac OS
+//SDK : QT
+//Main Lib : libpcap
+//Developer : OneTwo
+//Reference : http://www.joinc.co.kr/w/Site/Network_Programing/AdvancedComm/pcap_intro
+//Email : rig0408@naver.com
+
+
+
+
+
 #include "mainwindow.h"
 #include <QApplication>
 
