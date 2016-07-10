@@ -38,7 +38,6 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
     struct ether_header *ep;
     unsigned short ether_type;
     int chcnt = 0;
-    int length=pkthdr->len;
 
     ep=(struct ether_header * )packet;
     //ethernet packet
@@ -65,12 +64,14 @@ void callback(u_char *useless, const struct pcap_pkthdr *pkthdr, const u_char *p
             //tcp packet check
             printf("Source Port      : %d\n", ntohs(tcph->th_sport));
             printf("Destination Port : %d\n", ntohs(tcph->th_dport));
+        }else{
+            //no tcp protocol
+            printf("Source Port      : X\n");
+            printf("Destination Port : X\n");
         }
-        while(length--){
-            printf("%02x", *(packet++));
-            if ((++chcnt% 16)== 0)
-                printf("\n");
-        }
+
+
+
     }else {
         //execption for no ip type
         printf("NON IP PACKET\n");
