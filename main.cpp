@@ -1,7 +1,7 @@
 //platform : Mac OS
 //SDK : QT
 //Main Lib : libpcap
-//Developer : OneTwo
+//Developer : j0dev
 //Reference : http://www.joinc.co.kr/w/Site/Network_Programing/AdvancedComm/pcap_intro
 //Email : rig0408@naver.com
 
